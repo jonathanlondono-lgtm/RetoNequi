@@ -1,0 +1,15 @@
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: nequi_postgres
+    environment:
+      POSTGRES_DB: nequi_db
+      POSTGRES_USER: nequi_user
+      POSTGRES_PASSWORD: nequi_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
