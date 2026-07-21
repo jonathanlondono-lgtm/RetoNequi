@@ -1,0 +1,23 @@
+
+plugins {
+    id 'org.flywaydb.flyway' version '10.10.0'
+}
+
+dependencies {
+    implementation project(':model')
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'jakarta.persistence:jakarta.persistence-api'
+    implementation 'org.postgresql:r2dbc-postgresql'
+    implementation 'org.reactivecommons.utils:object-mapper-api:0.1.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    implementation 'org.postgresql:postgresql'
+
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.2.0'
+    implementation 'io.github.resilience4j:resilience4j-reactor:2.2.0'
+
+
+    testImplementation 'org.reactivecommons.utils:object-mapper:0.1.0'
+}
