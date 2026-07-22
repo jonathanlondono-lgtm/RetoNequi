@@ -10,7 +10,8 @@ API reactiva para la gestión de franquicias, sucursales y productos, construida
 2. [Módulos del Proyecto](#módulos-del-proyecto)
 3. [Modelo de Datos](#modelo-de-datos)
 4. [Ejecución Local con Docker](#ejecución-local-con-docker)
-5. [Infraestructura en AWS](#infraestructura-en-aws)
+5. [Documentación de la API](#documentación-de-la-api)
+6. [Infraestructura en AWS](#infraestructura-en-aws)
 6. [CI/CD — GitHub Actions](#cicd--github-actions)
 7. [Resiliencia](#resiliencia)
 8. [Tecnologías](#tecnologías)
@@ -138,6 +139,15 @@ docker-compose up -d
 ```bash
 docker-compose down
 ```
+
+---
+
+## Documentación de la API
+
+| Entorno | URL |
+|---------|-----|
+| Local   | http://localhost:8080/swagger-ui.html |
+| AWS     | http://nequi-alb-1299210639.us-east-1.elb.amazonaws.com/swagger-ui.html |
 
 ---
 
