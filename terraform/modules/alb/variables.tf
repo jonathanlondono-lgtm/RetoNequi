@@ -14,3 +14,7 @@ variable "server_port" {
   type = number
 }
 
+variable "alb_security_group_id" {
+  type = string
+}
+

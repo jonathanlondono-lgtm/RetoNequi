@@ -59,7 +59,6 @@ resource "aws_ecs_task_definition" "task" {
     image = "${var.repository_url}:latest"
     portMappings = [{
       containerPort = var.server_port
-      hostPort      = var.server_port
     }]
     secrets = [
       { name = "DB_HOST",     valueFrom = var.db_host_arn },

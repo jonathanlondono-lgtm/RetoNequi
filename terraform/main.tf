@@ -41,11 +41,12 @@ module "secrets" {
 }
 
 module "alb" {
-  source            = "./modules/alb"
-  app_name          = var.app_name
-  vpc_id            = module.networking.vpc_id
-  public_subnet_ids = module.networking.public_subnet_ids
-  server_port       = var.server_port
+  source                = "./modules/alb"
+  app_name              = var.app_name
+  vpc_id                = module.networking.vpc_id
+  public_subnet_ids     = module.networking.public_subnet_ids
+  server_port           = var.server_port
+  alb_security_group_id = module.networking.alb_security_group_id
 }
 
 module "ecs" {
