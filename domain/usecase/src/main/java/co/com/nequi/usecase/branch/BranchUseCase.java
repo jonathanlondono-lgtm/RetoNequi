@@ -27,8 +27,8 @@ public class BranchUseCase {
     public Mono<Branch> updateName(UpdateBranchNameCommand command) {
         return branchRepository.findById(command.branchId())
                 .switchIfEmpty(Mono.error(new BusinessException(BRANCH_NOT_FOUND, command.branchId())))
-                .map(branch -> branch.toBuilder().name(command.name()).build())
-                .flatMap(branchRepository::save);
+                .flatMap(branch -> validateBranchIsUnique(command.name(), branch.getFranchiseId())
+                        .then(Mono.defer(() -> branchRepository.save(branch.toBuilder().name(command.name()).build()))));
     }
 
     private Mono<Void> validateFranchiseExists(long franchiseId) {

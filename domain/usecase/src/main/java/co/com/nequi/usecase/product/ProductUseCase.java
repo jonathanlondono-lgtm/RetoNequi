@@ -42,8 +42,9 @@ public class ProductUseCase {
     public Mono<Product> updateName(UpdateProductNameCommand command) {
         return productRepository.findById(command.productId())
                 .switchIfEmpty(Mono.error(new BusinessException(PRODUCT_NOT_FOUND, command.productId())))
-                .map(product -> product.toBuilder().name(command.name()).build())
-                .flatMap(productRepository::save);
+                .flatMap(product -> productRepository.findByNameAndBranchId(command.name(), product.getBranchId())
+                        .flatMap(existing -> Mono.<Product>error(new BusinessException(PRODUCT_ALREADY_EXISTS)))
+                        .switchIfEmpty(Mono.defer(() -> productRepository.save(product.toBuilder().name(command.name()).build()))));
     }
 
     public Flux<Product> getTopProductsPerBranch(Long franchiseId) {
