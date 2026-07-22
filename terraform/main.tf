@@ -56,7 +56,7 @@ module "ecs" {
   container_memory                           = var.container_memory
   server_port                                = var.server_port
   repository_url                             = module.ecr.repository_url
-  private_subnet_ids                         = module.networking.private_subnet_ids
+  public_subnet_ids                          = module.networking.public_subnet_ids
   ecs_security_group_id                      = module.networking.ecs_security_group_id
   target_group_arn                           = module.alb.target_group_arn
   ecs_min_capacity                           = var.ecs_min_capacity
