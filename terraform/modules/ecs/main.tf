@@ -72,6 +72,15 @@ resource "aws_ecs_task_definition" "task" {
       { name = "RETRY_MAX_ATTEMPTS",                   valueFrom = var.retry_max_attempts_arn },
       { name = "RETRY_WAIT_DURATION",                  valueFrom = var.retry_wait_duration_arn }
     ]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = "/ecs/${var.app_name}"
+        "awslogs-region"        = var.region
+        "awslogs-stream-prefix" = "ecs"
+        "awslogs-create-group"  = "true"
+      }
+    }
   }])
 }
 
