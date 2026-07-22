@@ -60,6 +60,9 @@ resource "aws_ecs_task_definition" "task" {
     portMappings = [{
       containerPort = var.server_port
     }]
+    environment = [
+      { name = "SPRING_PROFILES_ACTIVE", value = "prod" }
+    ]
     secrets = [
       { name = "DB_HOST",     valueFrom = var.db_host_arn },
       { name = "DB_PORT",     valueFrom = var.db_port_arn },
