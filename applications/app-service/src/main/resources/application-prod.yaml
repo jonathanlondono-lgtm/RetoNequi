@@ -1,0 +1,38 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    locations: classpath:db/migration
+
+adapters:
+  r2dbc:
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    database: ${DB_NAME}
+    schema: "public"
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      databaseNequi:
+        sliding-window-size: ${CIRCUIT_BREAKER_SLIDING_WINDOW_SIZE}
+        failure-rate-threshold: ${CIRCUIT_BREAKER_FAILURE_RATE_THRESHOLD}
+        wait-duration-in-open-state: ${CIRCUIT_BREAKER_WAIT_DURATION}
+        permitted-number-of-calls-in-half-open-state: ${CIRCUIT_BREAKER_HALF_OPEN_CALLS}
+  timelimiter:
+    instances:
+      databaseNequi:
+        timeout-duration: ${CIRCUIT_BREAKER_TIMEOUT}
+  retry:
+    instances:
+      databaseNequi:
+        max-attempts: ${RETRY_MAX_ATTEMPTS}
+        wait-duration: ${RETRY_WAIT_DURATION}
