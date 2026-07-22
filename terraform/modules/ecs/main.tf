@@ -27,7 +27,10 @@ resource "aws_iam_policy" "ecs_secrets" {
       Effect = "Allow"
       Action = [
         "ssm:GetParameters",
-        "secretsmanager:GetSecretValue"
+        "secretsmanager:GetSecretValue",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
       ]
       Resource = "*"
     }]
