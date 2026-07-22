@@ -18,7 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @WebFluxTest
 @ContextConfiguration(classes = {RouterRest.class, FranchiseHandler.class, BranchHandler.class, ProductHandler.class})
-@Import({CorsConfig.class, SecurityHeadersConfig.class})
+@Import({SecurityHeadersConfig.class})
 class ConfigTest {
 
     @Autowired
