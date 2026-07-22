@@ -17,9 +17,7 @@ public enum ErrorCode {
     BRANCH_NOT_FOUND("BRN-001", "Branch not found: %s", 404),
 
     PRODUCT_NOT_FOUND("PRD-001", "Product not found: %s", 404),
-    PRODUCT_ALREADY_EXISTS("PRD-003", "Product already exists in this branch", 409),
-    PRODUCT_STOCK_INVALID("PRD-005", "Product stock cannot be negative", 400);
-
+    PRODUCT_ALREADY_EXISTS("PRD-003", "Product already exists in this branch", 409);
 
 
     private final String code;
