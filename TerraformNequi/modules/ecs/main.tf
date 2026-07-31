@@ -1,24 +1,24 @@
-resource "aws_iam_role" "ecs_task_execution" {
+resource "aws_iam_role" "this" {
   name = "${var.app_name}-ecs-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "ecs-tasks.amazonaws.com" }
     }]
   })
+
+  tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
-  role       = aws_iam_role.ecs_task_execution.name
+resource "aws_iam_role_policy_attachment" "this" {
+  role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_policy" "ecs_secrets" {
+resource "aws_iam_policy" "this" {
   name = "${var.app_name}-ecs-secrets-policy"
 
   policy = jsonencode({
@@ -35,24 +35,27 @@ resource "aws_iam_policy" "ecs_secrets" {
       Resource = "*"
     }]
   })
+
+  tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_secrets" {
-  role       = aws_iam_role.ecs_task_execution.name
-  policy_arn = aws_iam_policy.ecs_secrets.arn
+resource "aws_iam_role_policy_attachment" "secrets" {
+  role       = aws_iam_role.this.name
+  policy_arn = aws_iam_policy.this.arn
 }
 
-resource "aws_ecs_cluster" "cluster" {
+resource "aws_ecs_cluster" "this" {
   name = "${var.app_name}-cluster"
+  tags = var.tags
 }
 
-resource "aws_ecs_task_definition" "task" {
+resource "aws_ecs_task_definition" "this" {
   family                   = "${var.app_name}-task"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = var.container_cpu
   memory                   = var.container_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  execution_role_arn       = aws_iam_role.this.arn
 
   container_definitions = jsonencode([{
     name  = var.app_name
@@ -87,12 +90,14 @@ resource "aws_ecs_task_definition" "task" {
       }
     }
   }])
+
+  tags = var.tags
 }
 
-resource "aws_ecs_service" "service" {
+resource "aws_ecs_service" "this" {
   name                              = "${var.app_name}-service"
-  cluster                           = aws_ecs_cluster.cluster.id
-  task_definition                   = aws_ecs_task_definition.task.arn
+  cluster                           = aws_ecs_cluster.this.id
+  task_definition                   = aws_ecs_task_definition.this.arn
   launch_type                       = "FARGATE"
   desired_count                     = var.ecs_min_capacity
   health_check_grace_period_seconds = 180
@@ -108,22 +113,24 @@ resource "aws_ecs_service" "service" {
     container_name   = var.app_name
     container_port   = var.server_port
   }
+
+  tags = var.tags
 }
 
-resource "aws_appautoscaling_target" "ecs" {
+resource "aws_appautoscaling_target" "this" {
   max_capacity       = var.ecs_max_capacity
   min_capacity       = var.ecs_min_capacity
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.service.name}"
+  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "ecs_cpu" {
+resource "aws_appautoscaling_policy" "this" {
   name               = "${var.app_name}-cpu-scaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.ecs.resource_id
-  scalable_dimension = aws_appautoscaling_target.ecs.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.ecs.service_namespace
+  resource_id        = aws_appautoscaling_target.this.resource_id
+  scalable_dimension = aws_appautoscaling_target.this.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.this.service_namespace
 
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
@@ -132,5 +139,3 @@ resource "aws_appautoscaling_policy" "ecs_cpu" {
     target_value = 70.0
   }
 }
-
-
